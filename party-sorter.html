@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Draggable Objects Example</title>
+    <title>Party sort macro generator</title>
     <style>
         body {
             font-family: Roboto, Arial, sans-serif;
@@ -12,6 +12,7 @@
 
         .container {
             display: flex;
+            width: 500px;
             gap: 10px;
         }
 
@@ -49,6 +50,7 @@
             padding: 10px 20px;
             font-size: 16px;
             cursor: pointer;
+            width: 200px;
         }
     </style>
 </head>
@@ -138,7 +140,7 @@
             const desiredOrder = Array.from(items).map(item => item.textContent.trim());
 
             const inputTextarea = document.getElementById("input-textarea");
-            const startOrder = inputTextarea.value.split("\n").slice(0, 8);
+            const startOrder = inputTextarea.value.split("\n").map(line => line.trim()).slice(0, 8);
 
             const moveOrder = generateSort(startOrder, desiredOrder);
 
@@ -166,7 +168,7 @@
 
             macroLines = ["/echo sorting party list..."];
 
-            for (let i = 0; i < macroLines.length; i++) {
+            for (let i = 0; i < moveOrder.length; i++) {
 
                 if (i != moveOrder[i]) {
                     macroLines.push("/psort " + (moveOrder[i] + 1) + " " + (i + 1));
