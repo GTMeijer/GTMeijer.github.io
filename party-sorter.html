@@ -8,36 +8,48 @@
         body {
             font-family: Roboto, Arial, sans-serif;
             margin: 20px;
+            /*background-color: #f9f9f9;*/
+            /*color: #333;*/
         }
 
         .container {
-            display: flex;
-            width: 500px;
-            gap: 10px;
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 20px;
+            align-items: start;
+            max-width: 1000px;
+            margin: 0 auto;
         }
 
         textarea {
-            width: 200px;
-            height: 200px;
+            height: 250px;
             font-size: 16px;
-            padding: 8px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            resize: none;
         }
 
         .draggable-container {
-            flex: 1;
             border: 1px solid #ccc;
+            border-radius: 5px;
             padding: 10px;
-            min-height: 200px;
+            background-color: #fff;
+            min-height: 250px;
             display: flex;
             flex-direction: column;
             gap: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .draggable-item {
-            padding: 8px;
-            background-color: #f4f4f4;
-            border: 1px solid #ccc;
+            padding: 10px;
+            background-color: #e6e6e6;
+            border: 1px solid #bbb;
+            border-radius: 5px;
             cursor: grab;
+            text-align: center;
         }
 
             .draggable-item.dragging {
@@ -47,28 +59,48 @@
 
         button {
             margin-top: 10px;
-            padding: 10px 20px;
+            padding: 10px;
             font-size: 16px;
             cursor: pointer;
-            width: 200px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.2s ease;
+            width: 100%;
+        }
+
+            button:hover {
+                background-color: #0056b3;
+            }
+
+        h2 {
+            margin: 0 0 10px;
+            font-size: 18px;
+        }
+
+        .section {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div>
-            <div>
-                <textarea id="input-textarea" placeholder="Paste up to 8 lines here" oninput="generateDraggables()"></textarea>
-            </div>
+        <div class="section">
+            <h2>Input</h2>
+            <textarea id="input-textarea" placeholder="Paste up to 8 lines here" oninput="generateDraggables()"></textarea>
         </div>
-        <div class="draggable-container" id="draggable-container"></div>
-        <div>
-            <div>
-                <textarea id="output-textarea" placeholder="Macro will appear here"></textarea>
-            </div>
-            <div>
-                <button onclick="outputOrder()">Generate Macro</button>
-            </div>
+        <div class="section">
+            <h2>Drag for desired ordering</h2>
+            <div class="draggable-container" id="draggable-container"></div>
+        </div>
+        <div class="section">
+            <h2>Output</h2>
+            <textarea id="output-textarea" placeholder="Macro will appear here"></textarea>
+            <button onclick="outputOrder()">Generate Macro</button>
         </div>
     </div>
 
@@ -84,7 +116,7 @@
             lines.forEach((line, index) => {
                 if (line.trim() === "") return; // Skip empty lines
                 const div = document.createElement("div");
-                div.textContent = line;
+                div.textContent = line.trim();
                 div.className = "draggable-item";
                 div.draggable = true;
 
