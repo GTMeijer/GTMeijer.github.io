@@ -12,6 +12,14 @@
             /*color: #333;*/
         }
 
+        .info-section {
+            padding: 20px;
+            margin-bottom: 20px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
         .container {
             display: grid;
             grid-template-columns: 1fr 2fr 1fr;
@@ -75,6 +83,12 @@
                 background-color: #0056b3;
             }
 
+        h1 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
         h2 {
             margin: 0 0 10px;
             font-size: 18px;
@@ -85,9 +99,25 @@
             flex-direction: column;
             gap: 10px;
         }
+
+        .description {
+            font-size: 16px;
+            color: #555;
+            line-height: 1.5;
+        }
+
     </style>
 </head>
 <body>
+    <div class="info-section">
+        <h1>Party sort macro generator for FFXIV</h1>
+        <p class="description">
+            Because re-sorting the party list everytime you re-enter the raid is annoying.<br>
+            This tool helps you sort a list of party members by allowing you to drag and reorder them.<br>
+            Paste your list of members in the left textarea, rearrange them in the middle, and click "Generate Macro" to generate a macro for use in-game.<br>
+            - Kuchinawa Fujibayashi @ Odin
+        </p>
+    </div>
     <div class="container">
         <div class="section">
             <h2>Input</h2>
