@@ -1,12 +1,180 @@
-<html>
-  <head>
-    
-  </head>
-  <body>
-    <h1>FFXIV Party Sort Macro Generator</h1>
-    
-  </body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Draggable Objects Example</title>
+    <style>
+        body {
+            font-family: Roboto, Arial, sans-serif;
+            margin: 20px;
+        }
+
+        .container {
+            display: flex;
+            gap: 10px;
+        }
+
+        textarea {
+            width: 200px;
+            height: 200px;
+            font-size: 16px;
+            padding: 8px;
+        }
+
+        .draggable-container {
+            flex: 1;
+            border: 1px solid #ccc;
+            padding: 10px;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .draggable-item {
+            padding: 8px;
+            background-color: #f4f4f4;
+            border: 1px solid #ccc;
+            cursor: grab;
+        }
+
+            .draggable-item.dragging {
+                opacity: 0.5;
+                cursor: grabbing;
+            }
+
+        button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div>
+            <div>
+                <textarea id="input-textarea" placeholder="Paste up to 8 lines here" oninput="generateDraggables()"></textarea>
+            </div>
+        </div>
+        <div class="draggable-container" id="draggable-container"></div>
+        <div>
+            <div>
+                <textarea id="output-textarea" placeholder="Macro will appear here"></textarea>
+            </div>
+            <div>
+                <button onclick="outputOrder()">Generate Macro</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const draggableContainer = document.getElementById("draggable-container");
+        let dragSrcEl = null;
+
+        function generateDraggables() {
+            const inputTextarea = document.getElementById("input-textarea");
+            const lines = inputTextarea.value.split("\n").slice(0, 8); // Limit to 8 lines
+            draggableContainer.innerHTML = ""; // Clear previous items
+
+            lines.forEach((line, index) => {
+                if (line.trim() === "") return; // Skip empty lines
+                const div = document.createElement("div");
+                div.textContent = line;
+                div.className = "draggable-item";
+                div.draggable = true;
+
+                // Add drag events
+                div.addEventListener("dragstart", handleDragStart);
+                div.addEventListener("dragover", handleDragOver);
+                div.addEventListener("drop", handleDrop);
+                div.addEventListener("dragend", handleDragEnd);
+
+                draggableContainer.appendChild(div);
+            });
+        }
+
+        function handleDragStart(e) {
+            dragSrcEl = this;
+            e.dataTransfer.effectAllowed = "move";
+            e.dataTransfer.setData("text/html", this.outerHTML);
+            this.classList.add("dragging");
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = "move";
+        }
+
+        function handleDrop(e) {
+            e.stopPropagation();
+
+            if (dragSrcEl !== this) {
+                dragSrcEl.outerHTML = this.outerHTML;
+                this.outerHTML = e.dataTransfer.getData("text/html");
+                attachDragEvents(); // Reattach events to new elements
+            }
+        }
+
+        function handleDragEnd() {
+            this.classList.remove("dragging");
+        }
+
+        function attachDragEvents() {
+            const items = document.querySelectorAll(".draggable-item");
+            items.forEach(item => {
+                item.addEventListener("dragstart", handleDragStart);
+                item.addEventListener("dragover", handleDragOver);
+                item.addEventListener("drop", handleDrop);
+                item.addEventListener("dragend", handleDragEnd);
+            });
+        }
+
+        function outputOrder() {
+            const outputTextarea = document.getElementById("output-textarea");
+            const items = document.querySelectorAll(".draggable-item");
+            const desiredOrder = Array.from(items).map(item => item.textContent.trim());
+
+            const inputTextarea = document.getElementById("input-textarea");
+            const startOrder = inputTextarea.value.split("\n").slice(0, 8);
+
+            const moveOrder = generateSort(startOrder, desiredOrder);
+
+            outputTextarea.value = macroGenerator(moveOrder).join("\n");
+        }
+
+        function generateSort(startList, desiredList) {
+
+            let listSize = desiredList.length;
+
+            const moveOrder = [];
+            for (let i = 0; i < listSize; i++) {
+                let startIndex = startList.indexOf(desiredList[i]);
+
+                //Swap in the start list
+                [startList[i], startList[startIndex]] = [startList[startIndex], startList[i]];
+
+                moveOrder.push(startIndex);
+            }
+
+            return moveOrder;
+        }
+
+        function macroGenerator(moveOrder) {
+
+            macroLines = ["/echo sorting party list..."];
+
+            for (let i = 0; i < macroLines.length; i++) {
+
+                if (i != moveOrder[i]) {
+                    macroLines.push("/psort " + (moveOrder[i] + 1) + " " + (i + 1));
+                }
+            }
+
+            return macroLines;
+        }
+    </script>
+</body>
 </html>
-layout: page
-title: "FFXIV Party Sort Macro Generator"
-permalink: /party-sorter
